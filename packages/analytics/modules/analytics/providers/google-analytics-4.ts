@@ -26,10 +26,11 @@ export const googleAnalytics4 =
         if (options.measurementId)
           url.searchParams.set('measurement_id', options.measurementId);
 
+        const { user_id, ...restProperties } = data.user.properties;
         const userProperties = {
           language: data.meta.language,
           screen: data.meta.screen,
-          ...data.user.properties,
+          ...restProperties,
         };
         const mappedUserProperties = Object.fromEntries(
           Object.entries(userProperties).map(([name, value]) => [
@@ -42,6 +43,7 @@ export const googleAnalytics4 =
           method: 'POST',
           body: JSON.stringify({
             client_id: data.user.id,
+            ...(user_id ? { user_id } : {}),
             consent: {
               ad_user_data: 'DENIED',
               ad_personalization: 'DENIED',
